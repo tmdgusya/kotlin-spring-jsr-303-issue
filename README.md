@@ -230,6 +230,22 @@ data class User(
 
 이제 우리가 원하는 ErrorMessage 가 잘 등록되는 것을 확인할 수 있습니다.
 
+### 추가 Tip
+
+가끔 MissingKotlinParameterException 에 안걸리는 경우가 있을 경우 아래와 같이 대처해도 좋다. 
+
+```kotlin
+@ExceptionHandler(Exception::class)
+fun handleSuperApiException(ex: Exception): ResponseEntity<ErrorResponse> {
+    when (val cause = ex.cause) {
+        is MissingKotlinParameterException -> {
+            return missingParameterExceptionHandler(cause)
+        }
+    }
+    return ResponseEntity.badRequest().body(ErrorResponse.UNKNOWN_ERROR)
+}
+```
+
 ### Class.forName(...) 과 GC
 
 사실 가장 마음에 걸렸던건 ClassLoader 를 통해 동적으로 Class 를 Load 할때, 해당 Class 가 GC 의 Target 이 되냐 안되냐 였습니다. 
